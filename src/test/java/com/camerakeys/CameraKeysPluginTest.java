@@ -1,13 +1,13 @@
-package com.example;
+package com.camerakeys;
 
 import net.runelite.client.RuneLite;
 import net.runelite.client.externalplugins.ExternalPluginManager;
 
-public class ExamplePluginTest
+public class CameraKeysPluginTest
 {
 	public static void main(String[] args) throws Exception
 	{
-		ExternalPluginManager.loadBuiltin(ExamplePlugin.class);
+		ExternalPluginManager.loadBuiltin(CameraKeysPlugin.class);
 		RuneLite.main(args);
 	}
 }
