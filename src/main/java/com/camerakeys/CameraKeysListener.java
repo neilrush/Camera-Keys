@@ -38,19 +38,15 @@ import net.runelite.client.input.KeyListener;
 
 class CameraKeysListener implements KeyListener
 {
+	private final Set<Integer> blockedChars = new HashSet<>();
 	@Inject
 	private CameraKeysPlugin plugin;
-
 	@Inject
 	private CameraKeysConfig config;
-
 	@Inject
 	private Client client;
-
 	@Inject
 	private ClientThread clientThread;
-
-	private final Set<Integer> blockedChars = new HashSet<>();
 
 	@Override
 	public void keyTyped(KeyEvent e)
@@ -67,14 +63,14 @@ class CameraKeysListener implements KeyListener
 
 		if (!plugin.isTyping())
 		{
-			if(!blockedChars.contains(e.getKeyCode()) && !plugin.isDialogOpen())
+			if (!blockedChars.contains(e.getKeyCode()) && !plugin.isDialogOpen())
 			{
 				if (config.zoomKey().matches(e))
 				{
 					plugin.zoom(CameraKeysPlugin.keyState.PRESSED);
 				}
-
-				if (config.northKey().matches(e)) {
+				if (config.northKey().matches(e))
+				{
 					plugin.setCompassDirection(CameraKeysPlugin.CardinalDirections.NORTH);
 				}
 				if (config.eastKey().matches(e))

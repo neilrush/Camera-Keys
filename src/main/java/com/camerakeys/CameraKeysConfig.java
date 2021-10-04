@@ -60,7 +60,7 @@ public interface CameraKeysConfig extends Config
 		position = 1
 	)
 	@Range(
-		min = -187,
+		min = -272,
 		max = 1300
 	)
 	default int zoom()

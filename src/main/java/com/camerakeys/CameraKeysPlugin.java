@@ -353,8 +353,9 @@ public class CameraKeysPlugin extends Plugin
 
 	/**
 	 * Handles setting the string after rsn: in the chatbox.
+	 *
 	 * @param widget The chatbox widget.
-	 * @param input The string to set as the input string.
+	 * @param input  The string to set as the input string.
 	 */
 	private void setChatboxWidgetInput(Widget widget, String input)
 	{
@@ -369,6 +370,7 @@ public class CameraKeysPlugin extends Plugin
 
 	/**
 	 * Enables zoom.
+	 *
 	 * @param state the key state pressed/released
 	 */
 	void zoom(keyState state)
@@ -390,6 +392,7 @@ public class CameraKeysPlugin extends Plugin
 
 	/**
 	 * Handles the zoom logic for HOLD
+	 *
 	 * @param state the key state pressed/released
 	 */
 	private void zoomHold(keyState state)
@@ -410,6 +413,7 @@ public class CameraKeysPlugin extends Plugin
 
 	/**
 	 * Handles the zoom logic for TOGGLE
+	 *
 	 * @param state the key state pressed/released
 	 */
 	private void zoomToggle(keyState state)
@@ -437,6 +441,7 @@ public class CameraKeysPlugin extends Plugin
 
 	/**
 	 * Handles the zoom logic for SET
+	 *
 	 * @param state the key state pressed/released
 	 */
 	private void zoomSet(keyState state)
@@ -454,6 +459,7 @@ public class CameraKeysPlugin extends Plugin
 
 	/**
 	 * Sets the compass to the specified cardinal direction.
+	 *
 	 * @param direction the direction for the compass to be set to
 	 */
 	void setCompassDirection(CardinalDirections direction)
@@ -488,7 +494,7 @@ public class CameraKeysPlugin extends Plugin
 			final boolean isChatboxTransparent = client.isResized() && client.getVar(Varbits.TRANSPARENT_CHATBOX) == 1;
 			final Color textColor = isChatboxTransparent ? JagexColors.CHAT_TYPED_TEXT_TRANSPARENT_BACKGROUND : JagexColors.CHAT_TYPED_TEXT_OPAQUE_BACKGROUND;
 
-			if(chatboxInput != null)
+			if (chatboxInput != null)
 			{
 				String chatboxInputText = chatboxInput.getText();
 				int index = chatboxInputText.indexOf(':');
@@ -559,6 +565,7 @@ public class CameraKeysPlugin extends Plugin
 	 * interfere with the Key Remapping Plugin by checking if the Key
 	 * Remapping Plugin has been enabled or disabled. Then the
 	 * ChatInputHandlingState is changed to match.
+	 *
 	 * @param configChanged The ConfigChanged event
 	 */
 	private void checkForKeyRemappingPluginChange(ConfigChanged configChanged)
