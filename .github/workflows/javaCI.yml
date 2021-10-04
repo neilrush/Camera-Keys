@@ -25,5 +25,5 @@ jobs:
       - name: Archive reports
         uses: actions/upload-artifact@v2
         with:
-          name: reports
+          name: reports.zip
           path: build/reports
