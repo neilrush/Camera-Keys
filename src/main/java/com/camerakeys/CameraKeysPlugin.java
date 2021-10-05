@@ -88,6 +88,9 @@ public class CameraKeysPlugin extends Plugin
 
 	/**
 	 * The script id for toplevelcompassop
+	 * <p>
+	 * The script that handles setting the compass direction.
+	 * <p>
 	 * from <a href="https://github.com/runelite/runelite/blob/2b5ea1f0b5c09011ce95a93b01baa2bcf3438895/runelite-client/src/main/scripts/ToplevelCompassOp.rs2asm"> TopLevelCompassOp.rs2asm</a>
 	 */
 	private static final int COMPASS_SCRIPT_ID = 1050;
