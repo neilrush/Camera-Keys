@@ -84,14 +84,11 @@ public class CameraKeysPlugin extends Plugin
 	 */
 	private static final int ZOOM_CANCEL_THRESHOLD = 50;
 
-	/**
-	 * The name string for the KeyRemappingPlugin
-	 */
 	private static final String KEYREMAPPINGPLUGIN_NAME = "keyremappingplugin";
 
 	/**
 	 * The script id for toplevelcompassop
-	 * from https://github.com/runelite/runelite/blob/2b5ea1f0b5c09011ce95a93b01baa2bcf3438895/runelite-client/src/main/scripts/ToplevelCompassOp.rs2asm
+	 * from <a href="https://github.com/runelite/runelite/blob/2b5ea1f0b5c09011ce95a93b01baa2bcf3438895/runelite-client/src/main/scripts/ToplevelCompassOp.rs2asm"> TopLevelCompassOp.rs2asm</a>
 	 */
 	private static final int COMPASS_SCRIPT_ID = 1050;
 
@@ -137,7 +134,7 @@ public class CameraKeysPlugin extends Plugin
 	private ChatInputHandlingState chatInputHandlingState = ChatInputHandlingState.DISABLED;
 
 	/**
-	 * The state of the zoom level.
+	 * The current state of the zoom level state machine.
 	 */
 	private ZoomState zoomState = ZoomState.OFF;
 
@@ -265,7 +262,8 @@ public class CameraKeysPlugin extends Plugin
 
 	/**
 	 * Check if the chat box has exclusive input.
-	 * The world map search will take the input from the chat.
+	 * <p>
+	 * Note: The world map search will take the input from the chat.
 	 *
 	 * @return If the chatbox has the exclusive input.
 	 */
@@ -335,7 +333,7 @@ public class CameraKeysPlugin extends Plugin
 	}
 
 	/**
-	 * Unlock the chat by setting the chatbox input back to *
+	 * Unlocks the chat by setting the chatbox input back to "rsn: *"
 	 */
 	void unlockChat()
 	{
@@ -352,7 +350,7 @@ public class CameraKeysPlugin extends Plugin
 	}
 
 	/**
-	 * Handles setting the string after rsn: in the chatbox.
+	 * Handles setting the string after "rsn:" in the chatbox.
 	 *
 	 * @param widget The chatbox widget.
 	 * @param input  The string to set as the input string.
@@ -369,7 +367,7 @@ public class CameraKeysPlugin extends Plugin
 	}
 
 	/**
-	 * Enables zoom.
+	 * Toggles zoom based on {@link com.camerakeys.CameraKeysConfig.ActivationType}.
 	 *
 	 * @param state the key state pressed/released
 	 */
@@ -468,8 +466,8 @@ public class CameraKeysPlugin extends Plugin
 	}
 
 	/**
-	 * Check if the user set the zoom level to deviate more than ZOOM_CANCEL_THRESHOLD in either direction.
-	 * If so set zoomstate to off.
+	 * Check if the user set the zoom level to deviate more than {@link #ZOOM_CANCEL_THRESHOLD} in either direction.
+	 * If so set {@link #zoomState} to off.
 	 */
 	private void checkForZoomCancel()
 	{
@@ -481,7 +479,7 @@ public class CameraKeysPlugin extends Plugin
 	}
 
 	/**
-	 * Checks if chatinputhandlingstate is set to ENABLE. If so make
+	 * Checks if {@link #chatInputHandlingState} is set to ENABLE. If so make
 	 * sure chat has been unlocked before re-locking and setting
 	 * chatinputhandlingstate to ENABLED.
 	 */
@@ -509,7 +507,7 @@ public class CameraKeysPlugin extends Plugin
 	}
 
 	/**
-	 * Enables/Disables the overlay based on the zoomstate.
+	 * Enables/Disables the overlay based on the {@link #zoomState}.
 	 */
 	private void checkForOverlayUpdate()
 	{
@@ -528,8 +526,9 @@ public class CameraKeysPlugin extends Plugin
 	}
 
 	/**
-	 * Handles the ZOOM, SET and RESET zoomstates.
-	 * Sets the zoom level based on the state.
+	 * Handles the ZOOM, SET and RESET {@link #zoomState}.
+	 * <p>
+	 * Sets the zoom level based on {@link #zoomState}.
 	 */
 	private void checkForZoomUpdate()
 	{
@@ -562,9 +561,9 @@ public class CameraKeysPlugin extends Plugin
 
 	/**
 	 * Makes sure the functionality that is duplicated by this plugin doesn't
-	 * interfere with the Key Remapping Plugin by checking if the Key
+	 * interfere with {@link KeyRemappingPlugin} by checking if the Key
 	 * Remapping Plugin has been enabled or disabled. Then the
-	 * ChatInputHandlingState is changed to match.
+	 * {@link #chatInputHandlingState} is changed to match.
 	 *
 	 * @param configChanged The ConfigChanged event
 	 */
