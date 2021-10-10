@@ -23,6 +23,7 @@ however I have found that values above <code>1300</code> can be buggy.</p>
 The key that activates the set zoom level.
 
 <h3>Activation Type</h3>
+
 Changes the behavior of the zoom key. Values are:
 * Hold: Activated when pressed and deactivated when released.
 * Toggle: Activated when pressed then deactivated on the next press.
