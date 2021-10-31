@@ -82,6 +82,7 @@ public class CameraKeysPlugin extends Plugin
 	 * The allowed deviation from the set zoom level before the zoom is canceled.
 	 * About 3 "scroll wheel clicks"
 	 */
+	private static final int ZOOM_CANCEL_LOCKOUT_START_TICKS = 15;
 	private static final int ZOOM_CANCEL_THRESHOLD = 50;
 
 	private static final String KEYREMAPPINGPLUGIN_NAME = "keyremappingplugin";
@@ -151,6 +152,8 @@ public class CameraKeysPlugin extends Plugin
 	 * May not match the config value if it is lower or higher than is possible.
 	 */
 	private Integer newZoomLevel = null;
+
+	private Integer zoomCancelLockout = null;
 
 
 	@Override
@@ -474,10 +477,23 @@ public class CameraKeysPlugin extends Plugin
 	 */
 	private void checkForZoomCancel()
 	{
-		if (zoomState == ZoomState.ON && newZoomLevel != null && Math.abs(getZoom() - newZoomLevel) > ZOOM_CANCEL_THRESHOLD)
+		if (zoomState == ZoomState.ON)
 		{
-			zoomState = ZoomState.OFF; //user canceled zoom by scrolling
-			log.debug("zoom canceled by users set point. Target Zoom: " + newZoomLevel + " User Zoom: " + getZoom());
+			if (zoomCancelLockout != null)
+			{
+				if (zoomCancelLockout <= 0)
+				{
+					if (newZoomLevel != null && Math.abs(getZoom() - newZoomLevel) > ZOOM_CANCEL_THRESHOLD)
+					{
+						zoomState = ZoomState.OFF; //user canceled zoom by scrolling
+						log.debug("zoom canceled by users set point. Target Zoom: " + newZoomLevel + " User Zoom: " + getZoom());
+					}
+				}
+				else
+				{
+					zoomCancelLockout--;
+				}
+			}
 		}
 	}
 
@@ -542,6 +558,7 @@ public class CameraKeysPlugin extends Plugin
 				clientThread.invoke(() -> client.runScript(ScriptID.CAMERA_DO_ZOOM, cameraKeysConfig.zoom(), cameraKeysConfig.zoom()));
 				newZoomLevel = getZoom(); //get actual zoom after running script may be higher or lower than requested
 				log.debug("Zoom level change: " + prevZoomLevel + " --> " + newZoomLevel);
+				zoomCancelLockout = ZOOM_CANCEL_LOCKOUT_START_TICKS;
 				zoomState = ZoomState.ON;
 				break;
 			case SET:
@@ -554,6 +571,7 @@ public class CameraKeysPlugin extends Plugin
 				log.debug("Zoom level change: " + prevZoomLevel + " <-- " + getZoom());
 				clientThread.invoke(() -> client.runScript(ScriptID.CAMERA_DO_ZOOM, prevZoomLevel, prevZoomLevel));
 				zoomState = ZoomState.OFF;
+				zoomCancelLockout = null;
 				prevZoomLevel = null;
 				newZoomLevel = null;
 				break;
