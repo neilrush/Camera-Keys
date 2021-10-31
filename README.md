@@ -14,7 +14,7 @@ A RuneLite plugin that simply adds hotkey support for camera zoom and compass di
 <h3>Zoom level</h3>
 <p>A Value between <code>-272</code> and <code>1300</code> with larger values being more "zoomed in".</p>
 
-<p> Note: The game only support some zoom levels with plugins enabled. With no plugins enabled, the range is <code>128</code> to <code>896</code>.
+<p> Note: The game only supports some zoom levels with addtional plugins. With no plugins enabled, the range is <code>128</code> to <code>896</code>.
 With the RuneLite camera plugin the max range can be increased to be <code>-272</code> to <code>1004</code>. The zoom range can be extended even
 further with the <a href="https://github.com/Adam-/runelite-plugins/tree/zoom"> Zoom Extender plugin </a> to be  <code>-272</code> to <code>1400</code>
 however I have found that values above <code>1300</code> can be buggy.</p>
