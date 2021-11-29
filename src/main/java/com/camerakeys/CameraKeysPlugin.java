@@ -631,8 +631,8 @@ public class CameraKeysPlugin extends Plugin
 	enum CardinalDirections
 	{
 		NORTH(1),
-		EAST(3),
-		SOUTH(2),
+		EAST(2),
+		SOUTH(3),
 		WEST(4);
 
 		private final int value;
