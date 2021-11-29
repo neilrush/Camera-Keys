@@ -125,7 +125,7 @@ public interface CameraKeysConfig extends Config
 	)
 	default ModifierlessKeybind eastKey()
 	{
-		return null;
+		return new ModifierlessKeybind(KeyEvent.VK_UNDEFINED, 0);
 	}
 
 	@ConfigItem(
@@ -137,7 +137,7 @@ public interface CameraKeysConfig extends Config
 	)
 	default ModifierlessKeybind southKey()
 	{
-		return null;
+		return new ModifierlessKeybind(KeyEvent.VK_UNDEFINED, 0);
 	}
 
 	@ConfigItem(
@@ -149,7 +149,7 @@ public interface CameraKeysConfig extends Config
 	)
 	default ModifierlessKeybind westKey()
 	{
-		return null;
+		return new ModifierlessKeybind(KeyEvent.VK_UNDEFINED, 0);
 	}
 
 	@AllArgsConstructor
