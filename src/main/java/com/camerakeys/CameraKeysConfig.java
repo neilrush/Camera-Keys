@@ -52,6 +52,26 @@ public interface CameraKeysConfig extends Config
 	)
 	String CompassKeySection = "CompassKeys";
 
+	@ConfigSection(
+		name = "Advanced",
+		description = "Advanced Config Options",
+		position = 2,
+		closedByDefault = true
+	)
+	String AdvancedSection = "Advanced";
+
+	@ConfigItem(
+		position = 0,
+		keyName = "zoomKeyEnabled",
+		name = "Enable Zoom Key",
+		section = ZoomKeySection,
+		description = ""
+	)
+	default boolean zoomKeyEnabled()
+	{
+		return true;
+	}
+
 	@ConfigItem(
 		keyName = "zoom",
 		name = "Zoom level",
@@ -106,6 +126,18 @@ public interface CameraKeysConfig extends Config
 
 	@ConfigItem(
 		position = 0,
+		keyName = "compassKeysEnabled",
+		name = "Enable Compass Keys",
+		section = CompassKeySection,
+		description = ""
+	)
+	default boolean compassKeysEnabled()
+	{
+		return true;
+	}
+
+	@ConfigItem(
+		position = 1,
 		keyName = "northKey",
 		name = "North",
 		section = CompassKeySection,
@@ -117,7 +149,7 @@ public interface CameraKeysConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 1,
+		position = 2,
 		keyName = "eastKey",
 		name = "East",
 		section = CompassKeySection,
@@ -129,7 +161,7 @@ public interface CameraKeysConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 1,
+		position = 3,
 		keyName = "southKey",
 		name = "South",
 		section = CompassKeySection,
@@ -141,7 +173,7 @@ public interface CameraKeysConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 1,
+		position = 4,
 		keyName = "westKey",
 		name = "West",
 		section = CompassKeySection,
@@ -150,6 +182,18 @@ public interface CameraKeysConfig extends Config
 	default ModifierlessKeybind westKey()
 	{
 		return new ModifierlessKeybind(KeyEvent.VK_UNDEFINED, 0);
+	}
+
+	@ConfigItem(
+		position = 0,
+		keyName = "disableChatBlocking",
+		name = "Disable Chat Blocking",
+		section = AdvancedSection,
+		description = "Disables this plugin from blocking the chat with \"Press Enter to Chat...\""
+	)
+	default boolean disableChatBlocking()
+	{
+		return false;
 	}
 
 	@AllArgsConstructor
