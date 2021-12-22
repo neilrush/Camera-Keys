@@ -33,5 +33,5 @@ tasks.withType(JavaCompile) {
 }
 
 checkstyle {
-    configDirectory file('./')
+    configFile file('./checkstyle.xml')
 }
