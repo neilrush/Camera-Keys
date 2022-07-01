@@ -171,7 +171,7 @@ public class CameraKeysPlugin extends Plugin
 					typing = false;
 					lockChat();
 					// Clear any typed text
-					client.setVar(VarClientStr.CHATBOX_TYPED_TEXT, "");
+					client.setVarcStrValue(VarClientStr.CHATBOX_TYPED_TEXT, "");
 				}
 			});
 		}
@@ -284,7 +284,7 @@ public class CameraKeysPlugin extends Plugin
 		// the search box on the world map can be focused, and chat input goes there, even
 		// though the chatbox still has its key listener.
 		Widget worldMapSearch = client.getWidget(WidgetInfo.WORLD_MAP_SEARCH);
-		return worldMapSearch == null || client.getVar(VarClientInt.WORLD_MAP_SEARCH_FOCUSED) != 1;
+		return worldMapSearch == null || client.getVarcIntValue(VarClientInt.WORLD_MAP_SEARCH_FOCUSED) != 1;
 	}
 
 	/**
@@ -319,7 +319,7 @@ public class CameraKeysPlugin extends Plugin
 	 */
 	private int getZoom()
 	{
-		return client.getVar(VarClientInt.CAMERA_ZOOM_FIXED_VIEWPORT);
+		return client.getVarcIntValue(VarClientInt.CAMERA_ZOOM_FIXED_VIEWPORT);
 	}
 
 	/**
@@ -344,14 +344,10 @@ public class CameraKeysPlugin extends Plugin
 	void unlockChat()
 	{
 		Widget chatboxInput = client.getWidget(WidgetInfo.CHATBOX_INPUT);
-		if (chatboxInput != null)
 		{
-			if (client.getGameState() == GameState.LOGGED_IN)
-			{
-				final boolean isChatboxTransparent = client.isResized() && client.getVar(Varbits.TRANSPARENT_CHATBOX) == 1;
-				final Color textColor = isChatboxTransparent ? JagexColors.CHAT_TYPED_TEXT_TRANSPARENT_BACKGROUND : JagexColors.CHAT_TYPED_TEXT_OPAQUE_BACKGROUND;
-				setChatboxWidgetInput(chatboxInput, ColorUtil.wrapWithColorTag(client.getVar(VarClientStr.CHATBOX_TYPED_TEXT) + "*", textColor));
-			}
+			final boolean isChatboxTransparent = client.isResized() && client.getVarcIntValue(Varbits.TRANSPARENT_CHATBOX) == 1;
+			final Color textColor = isChatboxTransparent ? JagexColors.CHAT_TYPED_TEXT_TRANSPARENT_BACKGROUND : JagexColors.CHAT_TYPED_TEXT_OPAQUE_BACKGROUND;
+			setChatboxWidgetInput(chatboxInput, ColorUtil.wrapWithColorTag(client.getVarcStrValue(VarClientStr.CHATBOX_TYPED_TEXT) + "*", textColor));
 		}
 	}
 
@@ -482,6 +478,7 @@ public class CameraKeysPlugin extends Plugin
 			if (zoomCancelLockout != null)
 			{
 				if (zoomCancelLockout <= 0)
+				if (newZoomLevel != null && Math.abs(getZoom() - newZoomLevel) > ZOOM_CANCEL_THRESHOLD)
 				{
 					if (newZoomLevel != null && Math.abs(getZoom() - newZoomLevel) > ZOOM_CANCEL_THRESHOLD)
 					{
@@ -506,9 +503,9 @@ public class CameraKeysPlugin extends Plugin
 	{
 		if (chatInputHandlingState == ChatInputHandlingState.ENABLE)
 		{
-			client.setVar(VarClientStr.CHATBOX_TYPED_TEXT, "");
+			client.setVarcStrValue(VarClientStr.CHATBOX_TYPED_TEXT, "");
 			Widget chatboxInput = client.getWidget(WidgetInfo.CHATBOX_INPUT);
-			final boolean isChatboxTransparent = client.isResized() && client.getVar(Varbits.TRANSPARENT_CHATBOX) == 1;
+			final boolean isChatboxTransparent = client.isResized() && client.getVarcIntValue(Varbits.TRANSPARENT_CHATBOX) == 1;
 			final Color textColor = isChatboxTransparent ? JagexColors.CHAT_TYPED_TEXT_TRANSPARENT_BACKGROUND : JagexColors.CHAT_TYPED_TEXT_OPAQUE_BACKGROUND;
 
 			if (chatboxInput != null)

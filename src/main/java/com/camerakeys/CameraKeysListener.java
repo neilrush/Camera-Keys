@@ -116,6 +116,7 @@ class CameraKeysListener implements KeyListener
 						clientThread.invoke(() ->
 						{
 							client.setVar(VarClientStr.CHATBOX_TYPED_TEXT, "");
+							client.setVarcStrValue(VarClientStr.CHATBOX_TYPED_TEXT, "");
 							plugin.lockChat();
 						});
 					}
@@ -129,7 +130,7 @@ class CameraKeysListener implements KeyListener
 					break;
 				case KeyEvent.VK_BACK_SPACE:
 					// Only lock chat on backspace when the typed text is now empty
-					if (Strings.isNullOrEmpty(client.getVar(VarClientStr.CHATBOX_TYPED_TEXT)))
+					if (Strings.isNullOrEmpty(client.getVarcStrValue(VarClientStr.CHATBOX_TYPED_TEXT)))
 					{
 						plugin.setTyping(false);
 						if (plugin.getChatInputHandlingState() == CameraKeysPlugin.ChatInputHandlingState.ENABLED || plugin.getChatInputHandlingState() == CameraKeysPlugin.ChatInputHandlingState.ENABLE)
