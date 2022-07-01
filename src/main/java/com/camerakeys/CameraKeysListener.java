@@ -115,7 +115,7 @@ class CameraKeysListener implements KeyListener
 						e.consume();
 						clientThread.invoke(() ->
 						{
-							client.setVar(VarClientStr.CHATBOX_TYPED_TEXT, "");
+							client.setVarcStrValue(VarClientStr.CHATBOX_TYPED_TEXT, "");
 							client.setVarcStrValue(VarClientStr.CHATBOX_TYPED_TEXT, "");
 							plugin.lockChat();
 						});
