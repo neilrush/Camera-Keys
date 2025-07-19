@@ -1,6 +1,6 @@
 ![.](https://i.imgur.com/H9pDVkk.png)
 
-# Camera Keys ![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/neilrush/Camera-Keys/javaCI.yml) [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/neilrush/Camera-Keys?include_prereleases&logo=github)](https://github.com/neilrush/Camera-Keys/releases) [![Plugin Installs](http://img.shields.io/endpoint?url=https://i.pluginhub.info/shields/installs/plugin/Camera-Keys)](https://runelite.net/plugin-hub/neilrush)
+# Camera Keys ![GitHub Workflow Status (with event)](https://img.shields.io/github/actions/workflow/status/neilrush/Camera-Keys/javaCI.yml) [![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/neilrush/Camera-Keys?include_prereleases&logo=github)](https://github.com/neilrush/Camera-Keys/releases) [![Plugin Installs](http://img.shields.io/endpoint?url=https://api.runelite.net/pluginhub/shields/installs/plugin/camera-keys)](https://runelite.net/plugin-hub/neilrush) [![Plugin Rank](http://img.shields.io/endpoint?url=https://api.runelite.net/pluginhub/shields/rank/plugin/camera-keys)](https://runelite.net/plugin-hub)
 
 A RuneLite plugin that simply adds hotkey support for camera zoom and compass direction.
 
