@@ -28,11 +28,9 @@
 package com.camerakeys;
 
 import com.google.inject.Provides;
-
 import java.awt.Color;
 import java.util.Objects;
 import javax.inject.Inject;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -53,9 +51,7 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
-import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.PluginManager;
 import net.runelite.client.plugins.keyremapping.KeyRemappingPlugin;
 import net.runelite.client.ui.JagexColors;
 import net.runelite.client.ui.overlay.OverlayManager;
@@ -68,7 +64,8 @@ import net.runelite.client.util.ColorUtil;
         description = "Adds hotkeys for camera zoom and direction",
         tags = {"Camera, Hotkeys, Accessibility"}
 )
-public class CameraKeysPlugin extends Plugin {
+public class CameraKeysPlugin extends Plugin
+{
 
     /**
      * The string to display when chat is locked.
@@ -154,7 +151,8 @@ public class CameraKeysPlugin extends Plugin {
 
 
     @Override
-    protected void startUp() throws Exception {
+    protected void startUp() throws Exception
+    {
         //Handle chat locking if the keyremapping plugin isnt already
         String keyRemappingEnabled = configManager.getConfiguration(
                 "runelite",
@@ -168,28 +166,38 @@ public class CameraKeysPlugin extends Plugin {
                 ? ChatInputHandlingState.DISABLED
                 : ChatInputHandlingState.ENABLED;
 
-        if (chatInputHandlingState == ChatInputHandlingState.ENABLED) {
+        if (chatInputHandlingState == ChatInputHandlingState.ENABLED)
+        {
             clientThread.invoke(() ->
             {
-                if (client.getGameState() == GameState.LOGGED_IN) {
+                if (client.getGameState() == GameState.LOGGED_IN)
+                {
                     typing = false;
                     lockChat();
                     // Clear any typed text
                     client.setVarcStrValue(VarClientStr.CHATBOX_TYPED_TEXT, "");
                 }
             });
-        } else {
+        }
+        else
+        {
             //keyremapping is enabled so sync up typing state by checking chat contents
             Widget chatboxInput = client.getWidget(WidgetInfo.CHATBOX_INPUT);
-            if (chatboxInput != null) {
+            if (chatboxInput != null)
+            {
                 String chatboxInputText = chatboxInput.getText();
                 int index = chatboxInputText.indexOf(':');
-                if (index > -1) {
+                if (index > -1)
+                {
                     typing = !chatboxInputText.substring(index).equals(": " + PRESS_ENTER_TO_CHAT);
-                } else {
+                }
+                else
+                {
                     typing = false;
                 }
-            } else {
+            }
+            else
+            {
                 typing = false;
             }
         }
@@ -198,12 +206,16 @@ public class CameraKeysPlugin extends Plugin {
     }
 
     @Override
-    protected void shutDown() throws Exception {
-        if (chatInputHandlingState == ChatInputHandlingState.ENABLED) {
+    protected void shutDown() throws Exception
+    {
+        if (chatInputHandlingState == ChatInputHandlingState.ENABLED)
+        {
             clientThread.invoke(() ->
             {
-                if (client.getGameState() == GameState.LOGGED_IN) {
-                    if (zoomState == ZoomState.ON) {
+                if (client.getGameState() == GameState.LOGGED_IN)
+                {
+                    if (zoomState == ZoomState.ON)
+                    {
                         log.debug("Zoom level change: " + prevZoomLevel + " <-- " + getZoom());
                         clientThread.invoke(() -> client.runScript(ScriptID.CAMERA_DO_ZOOM, prevZoomLevel, prevZoomLevel));
                     }
@@ -218,17 +230,22 @@ public class CameraKeysPlugin extends Plugin {
     }
 
     @Subscribe
-    public void onScriptCallbackEvent(ScriptCallbackEvent scriptCallbackEvent) {
-        if (chatInputHandlingState == ChatInputHandlingState.ENABLED) {
-            switch (scriptCallbackEvent.getEventName()) {
+    public void onScriptCallbackEvent(ScriptCallbackEvent scriptCallbackEvent)
+    {
+        if (chatInputHandlingState == ChatInputHandlingState.ENABLED)
+        {
+            switch (scriptCallbackEvent.getEventName())
+            {
                 case SCRIPT_EVENT_SET_CHATBOX_INPUT:
                     Widget chatboxInput = client.getWidget(WidgetInfo.CHATBOX_INPUT);
-                    if (chatboxInput != null && !typing) {
+                    if (chatboxInput != null && !typing)
+                    {
                         setChatboxWidgetInput(chatboxInput, PRESS_ENTER_TO_CHAT);
                     }
                     break;
                 case SCRIPT_EVENT_BLOCK_CHAT_INPUT:
-                    if (!typing) {
+                    if (!typing)
+                    {
                         int[] intStack = client.getIntStack();
                         int intStackSize = client.getIntStackSize();
                         intStack[intStackSize - 1] = 1;
@@ -239,7 +256,8 @@ public class CameraKeysPlugin extends Plugin {
     }
 
     @Subscribe
-    public void onClientTick(ClientTick clientTick) {
+    public void onClientTick(ClientTick clientTick)
+    {
         checkForZoomUpdate();
         checkForZoomCancel();
         checkForChatLockUpdate();
@@ -247,7 +265,8 @@ public class CameraKeysPlugin extends Plugin {
     }
 
     @Subscribe
-    public void onConfigChanged(ConfigChanged configChanged) {
+    public void onConfigChanged(ConfigChanged configChanged)
+    {
         checkForKeyRemappingPluginChange(configChanged);
     }
 
@@ -258,9 +277,11 @@ public class CameraKeysPlugin extends Plugin {
      *
      * @return If the chatbox has the exclusive input.
      */
-    boolean chatboxFocused() {
+    boolean chatboxFocused()
+    {
         Widget chatboxParent = client.getWidget(WidgetInfo.CHATBOX_PARENT);
-        if (chatboxParent == null || chatboxParent.getOnKeyListener() == null) {
+        if (chatboxParent == null || chatboxParent.getOnKeyListener() == null)
+        {
             return false;
         }
 
@@ -276,7 +297,8 @@ public class CameraKeysPlugin extends Plugin {
      *
      * @return if conflicting dialog is open
      */
-    boolean isDialogOpen() {
+    boolean isDialogOpen()
+    {
         // Most chat dialogs with numerical input are added without the chatbox or its key listener being removed,
         // so chatboxFocused() is true. The chatbox onkey script uses the following logic to ignore key presses,
         // so we will use it too to not remap F-keys.
@@ -290,7 +312,8 @@ public class CameraKeysPlugin extends Plugin {
      * @param widgetInfo the widget to check.
      * @return if the hidden property is true. Will return true if the widget is null;
      */
-    private boolean isHidden(WidgetInfo widgetInfo) {
+    private boolean isHidden(WidgetInfo widgetInfo)
+    {
         Widget w = client.getWidget(widgetInfo);
         return w == null || w.isSelfHidden();
     }
@@ -298,17 +321,21 @@ public class CameraKeysPlugin extends Plugin {
     /**
      * @return the camera zoom level from the client vars
      */
-    private int getZoom() {
+    private int getZoom()
+    {
         return client.getVarcIntValue(VarClientInt.CAMERA_ZOOM_FIXED_VIEWPORT);
     }
 
     /**
      * Lock the chat by clearing input and setting it to PRESS_ENTER_TO_CHAT
      */
-    void lockChat() {
+    void lockChat()
+    {
         Widget chatboxInput = client.getWidget(WidgetInfo.CHATBOX_INPUT);
-        if (chatboxInput != null) {
-            if (chatInputHandlingState == ChatInputHandlingState.ENABLE) {
+        if (chatboxInput != null)
+        {
+            if (chatInputHandlingState == ChatInputHandlingState.ENABLE)
+            {
                 chatInputHandlingState = ChatInputHandlingState.ENABLED;
             }
             setChatboxWidgetInput(chatboxInput, PRESS_ENTER_TO_CHAT);
@@ -318,7 +345,8 @@ public class CameraKeysPlugin extends Plugin {
     /**
      * Unlocks the chat by setting the chatbox input back to "rsn: *"
      */
-    void unlockChat() {
+    void unlockChat()
+    {
         Widget chatboxInput = client.getWidget(WidgetInfo.CHATBOX_INPUT);
         {
             final boolean isChatboxTransparent = client.isResized() && client.getVarcIntValue(Varbits.TRANSPARENT_CHATBOX) == 1;
@@ -333,10 +361,12 @@ public class CameraKeysPlugin extends Plugin {
      * @param widget The chatbox widget.
      * @param input  The string to set as the input string.
      */
-    private void setChatboxWidgetInput(Widget widget, String input) {
+    private void setChatboxWidgetInput(Widget widget, String input)
+    {
         String text = widget.getText();
         int idx = text.indexOf(':');
-        if (idx != -1) {
+        if (idx != -1)
+        {
             String newText = text.substring(0, idx) + ": " + input;
             widget.setText(newText);
         }
@@ -347,8 +377,10 @@ public class CameraKeysPlugin extends Plugin {
      *
      * @param state the key state pressed/released
      */
-    void zoom(keyState state) {
-        switch (cameraKeysConfig.getActivationType()) {
+    void zoom(keyState state)
+    {
+        switch (cameraKeysConfig.getActivationType())
+        {
 
             case HOLD:
                 zoomHold(state);
@@ -367,13 +399,16 @@ public class CameraKeysPlugin extends Plugin {
      *
      * @param state the key state pressed/released
      */
-    private void zoomHold(keyState state) {
-        switch (state) {
+    private void zoomHold(keyState state)
+    {
+        switch (state)
+        {
             case PRESSED:
                 zoomState = ZoomState.ZOOM;
                 break;
             case RELEASED:
-                if (zoomState == ZoomState.ON) {
+                if (zoomState == ZoomState.ON)
+                {
                     zoomState = ZoomState.RESET;
                 }
                 break;
@@ -385,11 +420,14 @@ public class CameraKeysPlugin extends Plugin {
      *
      * @param state the key state pressed/released
      */
-    private void zoomToggle(keyState state) {
-        switch (state) {
+    private void zoomToggle(keyState state)
+    {
+        switch (state)
+        {
 
             case PRESSED:
-                switch (zoomState) {
+                switch (zoomState)
+                {
                     case OFF:
                         zoomState = ZoomState.ZOOM;
                         break;
@@ -410,8 +448,10 @@ public class CameraKeysPlugin extends Plugin {
      *
      * @param state the key state pressed/released
      */
-    private void zoomSet(keyState state) {
-        switch (state) {
+    private void zoomSet(keyState state)
+    {
+        switch (state)
+        {
 
             case PRESSED:
                 zoomState = ZoomState.SET;
@@ -426,7 +466,8 @@ public class CameraKeysPlugin extends Plugin {
      *
      * @param direction the direction for the compass to be set to
      */
-    void setCompassDirection(CardinalDirections direction) {
+    void setCompassDirection(CardinalDirections direction)
+    {
         clientThread.invoke(() -> client.runScript(COMPASS_SCRIPT_ID, direction.value));
     }
 
@@ -434,16 +475,23 @@ public class CameraKeysPlugin extends Plugin {
      * Check if the user set the zoom level to deviate more than {@link #ZOOM_CANCEL_THRESHOLD} in either direction.
      * If so set {@link #zoomState} to off.
      */
-    private void checkForZoomCancel() {
-        if (zoomState == ZoomState.ON) {
-            if (zoomCancelLockout != null) {
+    private void checkForZoomCancel()
+    {
+        if (zoomState == ZoomState.ON)
+        {
+            if (zoomCancelLockout != null)
+            {
                 if (zoomCancelLockout <= 0)
-                    if (newZoomLevel != null && Math.abs(getZoom() - newZoomLevel) > ZOOM_CANCEL_THRESHOLD) {
-                        if (newZoomLevel != null && Math.abs(getZoom() - newZoomLevel) > ZOOM_CANCEL_THRESHOLD) {
+                    if (newZoomLevel != null && Math.abs(getZoom() - newZoomLevel) > ZOOM_CANCEL_THRESHOLD)
+                    {
+                        if (newZoomLevel != null && Math.abs(getZoom() - newZoomLevel) > ZOOM_CANCEL_THRESHOLD)
+                        {
                             zoomState = ZoomState.OFF; //user canceled zoom by scrolling
                             log.debug("zoom canceled by users set point. Target Zoom: " + newZoomLevel + " User Zoom: " + getZoom());
                         }
-                    } else {
+                    }
+                    else
+                    {
                         zoomCancelLockout--;
                     }
             }
@@ -455,19 +503,23 @@ public class CameraKeysPlugin extends Plugin {
      * sure chat has been unlocked before re-locking and setting
      * chatinputhandlingstate to ENABLED.
      */
-    private void checkForChatLockUpdate() {
-        if (chatInputHandlingState == ChatInputHandlingState.ENABLE) {
+    private void checkForChatLockUpdate()
+    {
+        if (chatInputHandlingState == ChatInputHandlingState.ENABLE)
+        {
             client.setVarcStrValue(VarClientStr.CHATBOX_TYPED_TEXT, "");
             Widget chatboxInput = client.getWidget(WidgetInfo.CHATBOX_INPUT);
             final boolean isChatboxTransparent = client.isResized() && client.getVarcIntValue(Varbits.TRANSPARENT_CHATBOX) == 1;
             final Color textColor = isChatboxTransparent ? JagexColors.CHAT_TYPED_TEXT_TRANSPARENT_BACKGROUND : JagexColors.CHAT_TYPED_TEXT_OPAQUE_BACKGROUND;
 
-            if (chatboxInput != null) {
+            if (chatboxInput != null)
+            {
                 String chatboxInputText = chatboxInput.getText();
                 int index = chatboxInputText.indexOf(':');
 
                 //check for the default input string "rsn: *"
-                if (index > -1 && chatboxInputText.substring(index).equals(": " + ColorUtil.wrapWithColorTag("*", textColor))) {
+                if (index > -1 && chatboxInputText.substring(index).equals(": " + ColorUtil.wrapWithColorTag("*", textColor)))
+                {
                     lockChat();
                 }
             }
@@ -477,8 +529,10 @@ public class CameraKeysPlugin extends Plugin {
     /**
      * Enables/Disables the overlay based on the {@link #zoomState}.
      */
-    private void checkForOverlayUpdate() {
-        switch (zoomState) {
+    private void checkForOverlayUpdate()
+    {
+        switch (zoomState)
+        {
             case OFF:
                 overlayManager.remove(cameraKeysOverlay);
                 break;
@@ -496,8 +550,10 @@ public class CameraKeysPlugin extends Plugin {
      * <p>
      * Sets the zoom level based on {@link #zoomState}.
      */
-    private void checkForZoomUpdate() {
-        switch (zoomState) {
+    private void checkForZoomUpdate()
+    {
+        switch (zoomState)
+        {
             case ZOOM:
                 prevZoomLevel = getZoom();
                 clientThread.invoke(() -> client.runScript(ScriptID.CAMERA_DO_ZOOM, cameraKeysConfig.zoom(), cameraKeysConfig.zoom()));
@@ -533,13 +589,18 @@ public class CameraKeysPlugin extends Plugin {
      *
      * @param configChanged The ConfigChanged event
      */
-    private void checkForKeyRemappingPluginChange(ConfigChanged configChanged) {
-        if (Objects.equals(configChanged.getKey(), KEYREMAPPINGPLUGIN_NAME)) {
-            if (Objects.equals(configChanged.getNewValue(), "false")) {
+    private void checkForKeyRemappingPluginChange(ConfigChanged configChanged)
+    {
+        if (Objects.equals(configChanged.getKey(), KEYREMAPPINGPLUGIN_NAME))
+        {
+            if (Objects.equals(configChanged.getNewValue(), "false"))
+            {
                 log.debug("Key Remapping Plugin Disabled. Taking over the handling of the chat box");
                 //special case where the keyremapperplugin clears the chat on shutdown and the chat needs to be locked again
                 chatInputHandlingState = ChatInputHandlingState.ENABLE;
-            } else {
+            }
+            else
+            {
                 log.debug("Key Remapping Plugin Enabled. Stopping the handling of the chat box.");
                 chatInputHandlingState = ChatInputHandlingState.DISABLED;
             }
@@ -547,16 +608,19 @@ public class CameraKeysPlugin extends Plugin {
     }
 
     @Provides
-    CameraKeysConfig provideConfig(ConfigManager configManager) {
+    CameraKeysConfig provideConfig(ConfigManager configManager)
+    {
         return configManager.getConfig(CameraKeysConfig.class);
     }
 
-    enum keyState {
+    enum keyState
+    {
         PRESSED,
         RELEASED
     }
 
-    enum ChatInputHandlingState {
+    enum ChatInputHandlingState
+    {
         DISABLED,
         ENABLE,
         ENABLED
@@ -565,7 +629,8 @@ public class CameraKeysPlugin extends Plugin {
     /**
      * Represents the possible cardinal direction values used by osrs.
      */
-    enum CardinalDirections {
+    enum CardinalDirections
+    {
         NORTH(1),
         EAST(2),
         SOUTH(3),
@@ -573,16 +638,19 @@ public class CameraKeysPlugin extends Plugin {
 
         private final int value;
 
-        CardinalDirections(int value) {
+        CardinalDirections(int value)
+        {
             this.value = value;
         }
 
-        public int getValue() {
+        public int getValue()
+        {
             return value;
         }
     }
 
-    private enum ZoomState {
+    private enum ZoomState
+    {
         ON,
         ZOOM,
         SET,
