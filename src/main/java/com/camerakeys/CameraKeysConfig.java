@@ -26,6 +26,7 @@
 package com.camerakeys;
 
 import java.awt.event.KeyEvent;
+
 import lombok.AllArgsConstructor;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
@@ -35,136 +36,125 @@ import net.runelite.client.config.ModifierlessKeybind;
 import net.runelite.client.config.Range;
 
 @ConfigGroup("camerakeys")
-public interface CameraKeysConfig extends Config
-{
-	@ConfigSection(
-		name = "Zoom Key",
-		description = "Zoom Key settings",
-		position = 0,
-		closedByDefault = false
-	)
-	String ZoomKeySection = "ZoomKey";
-	@ConfigSection(
-		name = "Compass Keys",
-		description = "Compass Key Options",
-		position = 1,
-		closedByDefault = false
-	)
-	String CompassKeySection = "CompassKeys";
+public interface CameraKeysConfig extends Config {
+    @ConfigSection(
+            name = "Zoom Key",
+            description = "Zoom Key settings",
+            position = 0,
+            closedByDefault = false
+    )
+    String ZoomKeySection = "ZoomKey";
+    @ConfigSection(
+            name = "Compass Keys",
+            description = "Compass Key Options",
+            position = 1,
+            closedByDefault = false
+    )
+    String CompassKeySection = "CompassKeys";
 
-	@ConfigItem(
-		keyName = "zoom",
-		name = "Zoom level",
-		description = "Zoom level to change to",
-		section = ZoomKeySection,
-		position = 1
-	)
-	@Range(
-		min = -272,
-		max = 1300
-	)
-	default int zoom()
-	{
-		return 0;
-	}
+    @ConfigItem(
+            keyName = "zoom",
+            name = "Zoom level",
+            description = "Zoom level to change to",
+            section = ZoomKeySection,
+            position = 1
+    )
+    @Range(
+            min = -272,
+            max = 1300
+    )
+    default int zoom() {
+        return 0;
+    }
 
-	@ConfigItem(
-		position = 2,
-		keyName = "zoomKey",
-		name = "Zoom Key",
-		section = ZoomKeySection,
-		description = "The key that activates/toggles zoom level"
-	)
-	default ModifierlessKeybind zoomKey()
-	{
-		return new ModifierlessKeybind(KeyEvent.VK_C, 0); //default to c because optifine lol
-	}
+    @ConfigItem(
+            position = 2,
+            keyName = "zoomKey",
+            name = "Zoom Key",
+            section = ZoomKeySection,
+            description = "The key that activates/toggles zoom level"
+    )
+    default ModifierlessKeybind zoomKey() {
+        return new ModifierlessKeybind(KeyEvent.VK_C, 0); //default to c because optifine lol
+    }
 
-	@ConfigItem(
-		position = 3,
-		keyName = "activationType",
-		name = "Activation Type",
-		section = ZoomKeySection,
-		description = "The activation type of the zoom level key"
-	)
-	default ActivationType getActivationType()
-	{
-		return ActivationType.HOLD;
-	}
+    @ConfigItem(
+            position = 3,
+            keyName = "activationType",
+            name = "Activation Type",
+            section = ZoomKeySection,
+            description = "The activation type of the zoom level key"
+    )
+    default ActivationType getActivationType() {
+        return ActivationType.HOLD;
+    }
 
-	@ConfigItem(
-		position = 4,
-		keyName = "zoomIndicator",
-		name = "Zoom Icon",
-		section = ZoomKeySection,
-		description = "Displays an icon when the zoom is in effect"
-	)
-	default boolean isZoomIndicatorEnabled()
-	{
-		return true;
-	}
+    @ConfigItem(
+            position = 4,
+            keyName = "zoomIndicator",
+            name = "Zoom Icon",
+            section = ZoomKeySection,
+            description = "Displays an icon when the zoom is in effect"
+    )
+    default boolean isZoomIndicatorEnabled() {
+        return true;
+    }
 
-	@ConfigItem(
-		position = 0,
-		keyName = "northKey",
-		name = "North",
-		section = CompassKeySection,
-		description = "The key that faces the camera north"
-	)
-	default ModifierlessKeybind northKey()
-	{
-		return new ModifierlessKeybind(KeyEvent.VK_N, 0);
-	}
+    @ConfigItem(
+            position = 0,
+            keyName = "northKey",
+            name = "North",
+            section = CompassKeySection,
+            description = "The key that faces the camera north"
+    )
+    default ModifierlessKeybind northKey() {
+        return new ModifierlessKeybind(KeyEvent.VK_N, 0);
+    }
 
-	@ConfigItem(
-		position = 1,
-		keyName = "eastKey",
-		name = "East",
-		section = CompassKeySection,
-		description = "The key that faces the camera east"
-	)
-	default ModifierlessKeybind eastKey()
-	{
-		return new ModifierlessKeybind(KeyEvent.VK_UNDEFINED, 0);
-	}
+    @ConfigItem(
+            position = 1,
+            keyName = "eastKey",
+            name = "East",
+            section = CompassKeySection,
+            description = "The key that faces the camera east"
+    )
+    default ModifierlessKeybind eastKey() {
+        return new ModifierlessKeybind(KeyEvent.VK_UNDEFINED, 0);
+    }
 
-	@ConfigItem(
-		position = 1,
-		keyName = "southKey",
-		name = "South",
-		section = CompassKeySection,
-		description = "The key that faces the camera south"
-	)
-	default ModifierlessKeybind southKey()
-	{
-		return new ModifierlessKeybind(KeyEvent.VK_UNDEFINED, 0);
-	}
+    @ConfigItem(
+            position = 1,
+            keyName = "southKey",
+            name = "South",
+            section = CompassKeySection,
+            description = "The key that faces the camera south"
+    )
+    default ModifierlessKeybind southKey() {
+        return new ModifierlessKeybind(KeyEvent.VK_UNDEFINED, 0);
+    }
 
-	@ConfigItem(
-		position = 1,
-		keyName = "westKey",
-		name = "West",
-		section = CompassKeySection,
-		description = "The key that faces the camera west"
-	)
-	default ModifierlessKeybind westKey()
-	{
-		return new ModifierlessKeybind(KeyEvent.VK_UNDEFINED, 0);
-	}
+    @ConfigItem(
+            position = 1,
+            keyName = "westKey",
+            name = "West",
+            section = CompassKeySection,
+            description = "The key that faces the camera west"
+    )
+    default ModifierlessKeybind westKey() {
+        return new ModifierlessKeybind(KeyEvent.VK_UNDEFINED, 0);
+    }
 
-	@AllArgsConstructor
-	enum ActivationType
-	{
-		HOLD("Hold"),
-		TOGGLE("Toggle"),
-		SET("Set");
+    @AllArgsConstructor
+    enum ActivationType {
+        HOLD("Hold"),
+        TOGGLE("Toggle"),
+        SET("Set");
 
-		private final String value;
+        private final String value;
 
-		@Override
-		public String toString()
-		{
-			return value;
-		}
-	}
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
 }
