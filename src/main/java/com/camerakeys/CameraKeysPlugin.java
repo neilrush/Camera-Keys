@@ -53,10 +53,8 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
-import net.runelite.client.plugins.PluginDependency;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginManager;
-import net.runelite.client.plugins.keyremapping.KeyRemappingPlugin;
 import net.runelite.client.ui.JagexColors;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ColorUtil;
@@ -68,7 +66,6 @@ import net.runelite.client.util.ColorUtil;
         description = "Adds hotkeys for camera zoom and direction",
         tags = {"Camera, Hotkeys, Accessibility"}
 )
-@PluginDependency(KeyRemappingPlugin.class)
 public class CameraKeysPlugin extends Plugin {
 
     /**
@@ -121,9 +118,6 @@ public class CameraKeysPlugin extends Plugin {
     @Inject
     private CameraKeysOverlay cameraKeysOverlay;
 
-    @Inject
-    private KeyRemappingPlugin keyRemappingPlugin;
-
     /**
      * If the user is typing in the unlocked game chat
      */
@@ -156,11 +150,24 @@ public class CameraKeysPlugin extends Plugin {
 
     private Integer zoomCancelLockout = null;
 
+    /**
+     * Checks if the built-in Key Remapping plugin is loaded and enabled.
+     *
+     * @return true if the Key Remapping plugin is enabled, false otherwise.
+     */
+    private boolean isKeyRemappingPluginEnabled() {
+        for (Plugin plugin : pluginManager.getPlugins()) {
+            if (plugin.getClass().getSimpleName().equals("KeyRemappingPlugin")) {
+                return pluginManager.isPluginEnabled(plugin);
+            }
+        }
+        return false;
+    }
 
     @Override
     protected void startUp() throws Exception {
         //Handle chat locking if the keyremapping plugin isnt already
-        chatInputHandlingState = pluginManager.isPluginEnabled(keyRemappingPlugin) ? ChatInputHandlingState.DISABLED : ChatInputHandlingState.ENABLED;
+        chatInputHandlingState = isKeyRemappingPluginEnabled() ? ChatInputHandlingState.DISABLED : ChatInputHandlingState.ENABLED;
 
         if (chatInputHandlingState == ChatInputHandlingState.ENABLED) {
             clientThread.invoke(() ->
