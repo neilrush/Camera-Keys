@@ -1,37 +1,56 @@
 plugins {
-	id 'java'
+    id 'java'
     id 'checkstyle'
 }
 
 repositories {
-	mavenLocal()
-	maven {
-		url = 'https://repo.runelite.net'
-	}
-	mavenCentral()
+    mavenLocal()
+
+    maven {
+        url = 'https://repo.runelite.net'
+
+        content {
+            includeGroupByRegex("net\\.runelite.*")
+        }
+    }
+
+    mavenCentral()
 }
 
-def runeLiteVersion = '1.8.25'
+def runeLiteVersion = 'latest.release'
+def pluginMainClass = 'com.camerakeys.CameraKeysPluginTest'
 
 dependencies {
-	compileOnly group: 'net.runelite', name:'client', version: runeLiteVersion
+    compileOnly group: 'net.runelite', name: 'client', version: runeLiteVersion
 
-	compileOnly 'org.projectlombok:lombok:1.18.20'
-	annotationProcessor 'org.projectlombok:lombok:1.18.20'
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
 
-	testImplementation 'junit:junit:4.12'
-	testImplementation group: 'net.runelite', name:'client', version: runeLiteVersion
-	testImplementation group: 'net.runelite', name:'jshell', version: runeLiteVersion
+    testImplementation 'junit:junit:4.12'
+    testImplementation group: 'net.runelite', name: 'client', version: runeLiteVersion
+    testImplementation group: 'net.runelite', name: 'jshell', version: runeLiteVersion
 }
 
 group = 'com.camerakeys'
-version = '1.0.4'
-sourceCompatibility = '1.8'
+version = '1.0.5'
 
-tasks.withType(JavaCompile) {
-	options.encoding = 'UTF-8'
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release.set(11)
 }
 
 checkstyle {
     configDirectory = file('./')
+}
+
+tasks.register('run', JavaExec) {
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = pluginMainClass
+
+    jvmArgs "-ea"
+
+    // Keep dev RuneLite completely separate from your normal RuneLite
+    jvmArgs "-Duser.home=${projectDir}/.runelite-dev"
+
+    args "--developer-mode", "--debug"
 }
