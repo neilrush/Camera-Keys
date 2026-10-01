@@ -34,7 +34,7 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import net.runelite.api.Client;
-import net.runelite.api.VarClientStr;
+import net.runelite.api.gameval.VarClientID;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.input.KeyListener;
 
@@ -100,8 +100,7 @@ class CameraKeysListener implements KeyListener {
                         e.consume();
                         clientThread.invoke(() ->
                         {
-                            client.setVarcStrValue(VarClientStr.CHATBOX_TYPED_TEXT, "");
-                            client.setVarcStrValue(VarClientStr.CHATBOX_TYPED_TEXT, "");
+                            client.setVarcStrValue(VarClientID.CHATINPUT, "");
                             plugin.lockChat();
                         });
                     }
@@ -114,7 +113,7 @@ class CameraKeysListener implements KeyListener {
                     break;
                 case KeyEvent.VK_BACK_SPACE:
                     // Only lock chat on backspace when the typed text is now empty
-                    if (Strings.isNullOrEmpty(client.getVarcStrValue(VarClientStr.CHATBOX_TYPED_TEXT))) {
+                    if (Strings.isNullOrEmpty(client.getVarcStrValue(VarClientID.CHATINPUT))) {
                         plugin.setTyping(false);
                         if (plugin.getChatInputHandlingState() == CameraKeysPlugin.ChatInputHandlingState.ENABLED || plugin.getChatInputHandlingState() == CameraKeysPlugin.ChatInputHandlingState.ENABLE) {
                             clientThread.invoke(plugin::lockChat);

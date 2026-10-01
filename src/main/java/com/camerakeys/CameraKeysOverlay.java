@@ -33,7 +33,6 @@ import java.awt.image.BufferedImage;
 
 import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.OverlayPosition;
-import net.runelite.client.ui.overlay.OverlayPriority;
 import net.runelite.client.ui.overlay.components.ImageComponent;
 import net.runelite.client.util.ImageUtil;
 
@@ -46,7 +45,7 @@ public class CameraKeysOverlay extends OverlayPanel {
         super(plugin);
         setPosition(OverlayPosition.CANVAS_TOP_RIGHT);
         this.config = config;
-        setPriority(OverlayPriority.LOW);
+        setPriority(PRIORITY_LOW);
         zoomIcon = ImageUtil.loadImageResource(CameraKeysPlugin.class, "zoomIcon.png");
     }
 
