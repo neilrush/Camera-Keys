@@ -132,4 +132,8 @@ class CameraKeysListener implements KeyListener {
 
         blockedChars.remove(e.getKeyCode());
     }
+
+    void reset() {
+        blockedChars.clear();
+    }
 }

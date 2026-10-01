@@ -41,6 +41,8 @@ import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.ScriptID;
 import net.runelite.api.events.ClientTick;
+import net.runelite.api.events.FocusChanged;
+import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.ScriptCallbackEvent;
 import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.gameval.VarClientID;
@@ -151,6 +153,11 @@ public class CameraKeysPlugin extends Plugin {
     private Integer zoomCancelLockout = null;
 
     /**
+     * Tracks if the client was resized since the last tick.
+     */
+    private boolean wasResized = false;
+
+    /**
      * Checks if the built-in Key Remapping plugin is loaded and enabled.
      *
      * @return true if the Key Remapping plugin is enabled, false otherwise.
@@ -219,6 +226,19 @@ public class CameraKeysPlugin extends Plugin {
     }
 
     @Subscribe
+    public void onGameStateChanged(GameStateChanged gameStateChanged) {
+        GameState state = gameStateChanged.getGameState();
+
+        if (state == GameState.LOGIN_SCREEN) {
+            // Reset zoom state machine
+            clearZoomState();
+            // Reset typing and key listener states
+            typing = false;
+            cameraKeysListener.reset();
+        }
+    }
+
+    @Subscribe
     public void onScriptCallbackEvent(ScriptCallbackEvent scriptCallbackEvent) {
         if (chatInputHandlingState == ChatInputHandlingState.ENABLED) {
             switch (scriptCallbackEvent.getEventName()) {
@@ -245,11 +265,66 @@ public class CameraKeysPlugin extends Plugin {
         checkForZoomCancel();
         checkForChatLockUpdate();
         checkForOverlayUpdate();
+        checkForViewportChange();
+    }
+
+    @Subscribe
+    public void onFocusChanged(FocusChanged focusChanged) {
+        if (!focusChanged.isFocused()) {
+            //release any blocked keys
+            cameraKeysListener.reset();
+            // release the zoom so it doesn't get permanently stuck
+            if (cameraKeysConfig.getActivationType() == CameraKeysConfig.ActivationType.HOLD && zoomState == ZoomState.ON) {
+                zoomState = ZoomState.RESET;
+            }
+        }
+    }
+
+    /**
+     * Checks if the viewport mode has changed since last update. If so, reset the zoom state machine.
+     */
+    private void checkForViewportChange() {
+        if (client.isResized() != wasResized) {
+            wasResized = client.isResized();
+            // Viewport mode changed so full reset
+            if (zoomState != ZoomState.OFF) {
+                clearZoomState();
+            }
+        }
+    }
+
+    /**
+     * Clears the zoom state machine to the default state.
+     * Otherwise should normally use Zoomstate.RESET to reset the zoom level to the previous value.
+     */
+    private void clearZoomState() {
+        zoomState = ZoomState.OFF;
+        prevZoomLevel = null;
+        newZoomLevel = null;
+        zoomCancelLockout = null;
     }
 
     @Subscribe
     public void onConfigChanged(ConfigChanged configChanged) {
         checkForKeyRemappingPluginChange(configChanged);
+        checkForCamerKeysPluginChange(configChanged);
+
+    }
+
+    /** Checks if the Camera Keys plugin config has changed. If so, reset the zoom state machine if necessary.
+     *
+     * @param configChanged The ConfigChanged event
+     */
+    private void checkForCamerKeysPluginChange(ConfigChanged configChanged) {
+        if (configChanged.getGroup().equals("camerakeys")) {
+            // If zoom settings changed while zoomed in, reset zoom
+            if (configChanged.getKey().equals("activationType") || configChanged.getKey().equals("zoomKey")) {
+                if (zoomState != ZoomState.OFF) {
+                    zoomState = ZoomState.RESET;
+                    cameraKeysListener.reset(); //reset blocked keys
+                }
+            }
+        }
     }
 
     /**
