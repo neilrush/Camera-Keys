@@ -511,17 +511,12 @@ public class CameraKeysPlugin extends Plugin {
      * If so set {@link #zoomState} to off.
      */
     private void checkForZoomCancel() {
-        if (zoomState == ZoomState.ON) {
-            if (zoomCancelLockout != null) {
-                if (zoomCancelLockout <= 0)
-                    if (newZoomLevel != null && Math.abs(getZoom() - newZoomLevel) > ZOOM_CANCEL_THRESHOLD) {
-                        if (newZoomLevel != null && Math.abs(getZoom() - newZoomLevel) > ZOOM_CANCEL_THRESHOLD) {
-                            zoomState = ZoomState.OFF; //user canceled zoom by scrolling
-                            log.debug("zoom canceled by users set point. Target Zoom: " + newZoomLevel + " User Zoom: " + getZoom());
-                        }
-                    } else {
-                        zoomCancelLockout--;
-                    }
+        if (zoomState == ZoomState.ON && zoomCancelLockout != null) {
+            if (zoomCancelLockout > 0) {
+                zoomCancelLockout--;
+            } else if (newZoomLevel != null && Math.abs(getZoom() - newZoomLevel) > ZOOM_CANCEL_THRESHOLD) {
+                clearZoomState(); // user canceled zoom by scrolling, reset state and clear overlay
+                log.debug("zoom canceled by users set point. Target Zoom: " + newZoomLevel + " User Zoom: " + getZoom());
             }
         }
     }
@@ -576,9 +571,13 @@ public class CameraKeysPlugin extends Plugin {
         switch (zoomState) {
             case ZOOM:
                 prevZoomLevel = getZoom();
-                clientThread.invoke(() -> client.runScript(ScriptID.CAMERA_DO_ZOOM, cameraKeysConfig.zoom(), cameraKeysConfig.zoom()));
-                newZoomLevel = getZoom(); //get actual zoom after running script may be higher or lower than requested
-                log.debug("Zoom level change: " + prevZoomLevel + " --> " + newZoomLevel);
+                int targetZoom = cameraKeysConfig.zoom();
+                newZoomLevel = targetZoom;
+                clientThread.invoke(() -> {
+                    client.runScript(ScriptID.CAMERA_DO_ZOOM, targetZoom, targetZoom);
+                    newZoomLevel = getZoom(); // get actual zoom after running script may be higher or lower than requested
+                });
+                log.debug("Zoom level change: " + prevZoomLevel + " --> " + targetZoom);
                 zoomCancelLockout = ZOOM_CANCEL_LOCKOUT_START_TICKS;
                 zoomState = ZoomState.ON;
                 break;
