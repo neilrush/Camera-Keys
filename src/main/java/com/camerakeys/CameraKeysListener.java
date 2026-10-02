@@ -27,130 +27,113 @@
 package com.camerakeys;
 
 import com.google.common.base.Strings;
+
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
 import javax.inject.Inject;
+
 import net.runelite.api.Client;
-import net.runelite.api.VarClientStr;
+import net.runelite.api.gameval.VarClientID;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.input.KeyListener;
 
-class CameraKeysListener implements KeyListener
-{
-	private final Set<Integer> blockedChars = new HashSet<>();
-	@Inject
-	private CameraKeysPlugin plugin;
-	@Inject
-	private CameraKeysConfig config;
-	@Inject
-	private Client client;
-	@Inject
-	private ClientThread clientThread;
+class CameraKeysListener implements KeyListener {
+    private final Set<Integer> blockedChars = new HashSet<>();
+    @Inject
+    private CameraKeysPlugin plugin;
+    @Inject
+    private CameraKeysConfig config;
+    @Inject
+    private Client client;
+    @Inject
+    private ClientThread clientThread;
 
-	@Override
-	public void keyTyped(KeyEvent e)
-	{
-	}
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
 
-	@Override
-	public void keyPressed(KeyEvent e)
-	{
-		if (!plugin.chatboxFocused())
-		{
-			return;
-		}
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (!plugin.chatboxFocused()) {
+            return;
+        }
 
-		if (!plugin.isTyping())
-		{
-			if (!blockedChars.contains(e.getKeyCode()) && !plugin.isDialogOpen())
-			{
-				if (config.zoomKey().matches(e))
-				{
-					plugin.zoom(CameraKeysPlugin.keyState.PRESSED);
-				}
-				if (config.northKey().matches(e))
-				{
-					plugin.setCompassDirection(CameraKeysPlugin.CardinalDirections.NORTH);
-				}
-				if (config.eastKey().matches(e))
-				{
-					plugin.setCompassDirection(CameraKeysPlugin.CardinalDirections.EAST);
-				}
-				if (config.southKey().matches(e))
-				{
-					plugin.setCompassDirection(CameraKeysPlugin.CardinalDirections.SOUTH);
-				}
-				if (config.westKey().matches(e))
-				{
-					plugin.setCompassDirection(CameraKeysPlugin.CardinalDirections.WEST);
-				}
-			}
-			switch (e.getKeyCode())
-			{
-				case KeyEvent.VK_ENTER:
-				case KeyEvent.VK_SLASH:
-				case KeyEvent.VK_COLON:
-					// refocus chatbox
-					plugin.setTyping(true);
-					if (plugin.getChatInputHandlingState() == CameraKeysPlugin.ChatInputHandlingState.ENABLED)
-					{
-						clientThread.invoke(plugin::unlockChat);
-					}
-					break;
-			}
+        if (!plugin.isTyping()) {
+            if (!blockedChars.contains(e.getKeyCode()) && !plugin.isDialogOpen()) {
+                if (config.zoomKey().matches(e)) {
+                    plugin.zoom(CameraKeysPlugin.keyState.PRESSED);
+                }
+                if (config.northKey().matches(e)) {
+                    plugin.setCompassDirection(CameraKeysPlugin.CardinalDirections.NORTH);
+                }
+                if (config.eastKey().matches(e)) {
+                    plugin.setCompassDirection(CameraKeysPlugin.CardinalDirections.EAST);
+                }
+                if (config.southKey().matches(e)) {
+                    plugin.setCompassDirection(CameraKeysPlugin.CardinalDirections.SOUTH);
+                }
+                if (config.westKey().matches(e)) {
+                    plugin.setCompassDirection(CameraKeysPlugin.CardinalDirections.WEST);
+                }
+            }
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_ENTER:
+                case KeyEvent.VK_SLASH:
+                case KeyEvent.VK_COLON:
+                    // refocus chatbox
+                    plugin.setTyping(true);
+                    if (plugin.getChatInputHandlingState() == CameraKeysPlugin.ChatInputHandlingState.ENABLED) {
+                        clientThread.invoke(plugin::unlockChat);
+                    }
+                    break;
+            }
 
-			blockedChars.add(e.getKeyCode());
-		}
-		else
-		{
-			switch (e.getKeyCode())
-			{
-				case KeyEvent.VK_ESCAPE:
-					plugin.setTyping(false);
-					if (plugin.getChatInputHandlingState() == CameraKeysPlugin.ChatInputHandlingState.ENABLED || plugin.getChatInputHandlingState() == CameraKeysPlugin.ChatInputHandlingState.ENABLE)
-					{
-						// When exiting typing mode, block the escape key
-						// so that it doesn't trigger the in-game hotkeys
-						e.consume();
-						clientThread.invoke(() ->
-						{
-							client.setVarcStrValue(VarClientStr.CHATBOX_TYPED_TEXT, "");
-							client.setVarcStrValue(VarClientStr.CHATBOX_TYPED_TEXT, "");
-							plugin.lockChat();
-						});
-					}
-					break;
-				case KeyEvent.VK_ENTER:
-					plugin.setTyping(false);
-					if (plugin.getChatInputHandlingState() == CameraKeysPlugin.ChatInputHandlingState.ENABLED || plugin.getChatInputHandlingState() == CameraKeysPlugin.ChatInputHandlingState.ENABLE)
-					{
-						clientThread.invoke(plugin::lockChat);
-					}
-					break;
-				case KeyEvent.VK_BACK_SPACE:
-					// Only lock chat on backspace when the typed text is now empty
-					if (Strings.isNullOrEmpty(client.getVarcStrValue(VarClientStr.CHATBOX_TYPED_TEXT)))
-					{
-						plugin.setTyping(false);
-						if (plugin.getChatInputHandlingState() == CameraKeysPlugin.ChatInputHandlingState.ENABLED || plugin.getChatInputHandlingState() == CameraKeysPlugin.ChatInputHandlingState.ENABLE)
-						{
-							clientThread.invoke(plugin::lockChat);
-						}
-					}
-					break;
-			}
-		}
-	}
+            blockedChars.add(e.getKeyCode());
+        } else {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_ESCAPE:
+                    plugin.setTyping(false);
+                    if (plugin.getChatInputHandlingState() == CameraKeysPlugin.ChatInputHandlingState.ENABLED || plugin.getChatInputHandlingState() == CameraKeysPlugin.ChatInputHandlingState.ENABLE) {
+                        // When exiting typing mode, block the escape key
+                        // so that it doesn't trigger the in-game hotkeys
+                        e.consume();
+                        clientThread.invoke(() ->
+                        {
+                            client.setVarcStrValue(VarClientID.CHATINPUT, "");
+                            plugin.lockChat();
+                        });
+                    }
+                    break;
+                case KeyEvent.VK_ENTER:
+                    plugin.setTyping(false);
+                    if (plugin.getChatInputHandlingState() == CameraKeysPlugin.ChatInputHandlingState.ENABLED || plugin.getChatInputHandlingState() == CameraKeysPlugin.ChatInputHandlingState.ENABLE) {
+                        clientThread.invoke(plugin::lockChat);
+                    }
+                    break;
+                case KeyEvent.VK_BACK_SPACE:
+                    // Only lock chat on backspace when the typed text is now empty
+                    if (Strings.isNullOrEmpty(client.getVarcStrValue(VarClientID.CHATINPUT))) {
+                        plugin.setTyping(false);
+                        if (plugin.getChatInputHandlingState() == CameraKeysPlugin.ChatInputHandlingState.ENABLED || plugin.getChatInputHandlingState() == CameraKeysPlugin.ChatInputHandlingState.ENABLE) {
+                            clientThread.invoke(plugin::lockChat);
+                        }
+                    }
+                    break;
+            }
+        }
+    }
 
-	@Override
-	public void keyReleased(KeyEvent e)
-	{
-		if (config.zoomKey().matches(e))
-		{
-			plugin.zoom(CameraKeysPlugin.keyState.RELEASED);
-		}
+    @Override
+    public void keyReleased(KeyEvent e) {
+        if (config.zoomKey().matches(e)) {
+            plugin.zoom(CameraKeysPlugin.keyState.RELEASED);
+        }
 
-		blockedChars.remove(e.getKeyCode());
-	}
+        blockedChars.remove(e.getKeyCode());
+    }
+
+    void reset() {
+        blockedChars.clear();
+    }
 }
