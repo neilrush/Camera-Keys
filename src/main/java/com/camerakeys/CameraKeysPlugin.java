@@ -372,10 +372,12 @@ public class CameraKeysPlugin extends Plugin {
     }
 
     /**
-     * @return the camera zoom level from the client vars
+     * @return the camera zoom level from the client var that corresponds to the current viewport mode.
      */
     private int getZoom() {
-        return client.getVarcIntValue(VarClientID.CAMERA_ZOOM_SMALL);
+        return client.getVarcIntValue(client.isResized()
+                ? VarClientID.CAMERA_ZOOM_BIG
+                : VarClientID.CAMERA_ZOOM_SMALL);
     }
 
     /**
